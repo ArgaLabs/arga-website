@@ -10,7 +10,7 @@ const Header = () => {
   const headerClassName = cn("w-full", isDark ? "bg-white text-black" : "bg-black text-white");
   const borderClassName = cn("fixed top-0 z-50 w-full border-b", isDark ? "border-black/10" : "border-white/10");
   const linkClassName = cn(
-    "text-base font-bold transition-colors",
+    "text-base font-medium transition-colors",
     isDark ? "text-black hover:text-black" : "text-white hover:text-white",
   );
   const logoSrc = isDark ? "/logo_white.png" : "/black_header.jpg";

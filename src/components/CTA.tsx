@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,33 @@ const CTA = () => {
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            setHasAnimated(true);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -55,8 +82,20 @@ const CTA = () => {
   };
 
   return (
-    <section id="cta" className="scroll-mt-20 px-6 py-48 border-t border-border">
-      <div className="max-w-3xl mx-auto text-center space-y-8">
+    <section 
+      ref={sectionRef}
+      id="cta" 
+      className="scroll-mt-20 px-6 py-48 border-t border-border"
+    >
+      <div className={`max-w-3xl mx-auto text-center space-y-8 ${
+        hasAnimated ? 'transition-all duration-1000' : ''
+      } ${
+        isVisible
+          ? 'opacity-100 translate-y-0'
+          : hasAnimated 
+            ? 'opacity-0 translate-y-10' 
+            : 'opacity-100 translate-y-0'
+      }`}>
         <h2 className="text-3xl md:text-5xl font-bold">
           Join our alpha program
         </h2>
@@ -66,33 +105,29 @@ const CTA = () => {
         </p>
         
         <form
-          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-4"
+          className="flex flex-col gap-3 max-w-md mx-auto pt-4"
           onSubmit={handleSubmit}
         >
-          <div className="flex flex-col gap-2 flex-1">
-            <Input
-              type="email"
-              placeholder="your@email.com"
-              className="h-12 px-4"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-            <div className="text-left">
-              <Input
-                type="text"
-                placeholder="Company Name (optional)"
-                className="h-12 px-4"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-              />
-            </div>
-          </div>
+          <Input
+            type="email"
+            placeholder="your@email.com"
+            className="h-12 px-4"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+          <Input
+            type="text"
+            placeholder="Company Name (optional)"
+            className="h-12 px-4"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+          />
           <Button
             variant="ghost"
             size="lg"
             type="submit"
-            className="group border border-border hover:bg-black hover:text-white"
+            className="group border border-border hover:bg-black hover:text-white h-12"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Submitting..." : "Get access"}

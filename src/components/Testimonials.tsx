@@ -1,10 +1,12 @@
 import { Card } from "@/components/ui/card";
+import { useEffect, useRef, useState } from "react";
 
 type Testimonial = {
   quote: string;
   author: string;
   title: string;
   company: string;
+  avatar?: string;
 };
 
 const testimonials: Testimonial[] = [
@@ -43,28 +45,87 @@ const testimonials: Testimonial[] = [
     title: "Meta",
     company: "Dev Infrastructure",
   },
+  {
+    quote:
+      "I'd use something like this if it existed, but nothing on the market is even close to being reliable while fully autonomous.",
+    author: "Member of Technical Staff",
+    title: "Microsoft AI",
+    company: "Copilot",
+  },
 ];
 
 const Testimonials = () => {
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const [hasAnimated, setHasAnimated] = useState<Set<number>>(new Set());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = parseInt(entry.target.getAttribute('data-index') || '0');
+          if (entry.isIntersecting) {
+            setVisibleCards((prev) => new Set(prev).add(index));
+            setHasAnimated((prev) => new Set(prev).add(index));
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const observeCard = (element: HTMLDivElement | null, index: number) => {
+    if (element && observerRef.current) {
+      observerRef.current.observe(element);
+    }
+  };
+
   return (
-    <section id="testimonials" className="scroll-mt-20 px-6 py-24 border-t border-border">
-      <div className="max-w-5xl mx-auto space-y-10">
-        <div className="space-y-3 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold">What teams say</h2>
-          <p className="text-lg text-muted-foreground">Current pain points in enterprise environments</p>
+    <section id="testimonials" className="scroll-mt-20 px-8 py-24 bg-muted/30">
+      <div className="max-w-[1400px] mx-auto">
+        <div className="space-y-4 text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold">
+            What teams say
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Current pain points in enterprise environments
+          </p>
         </div>
 
-        <div className="grid gap-6">
-          {testimonials.map((t, i) => (
-            <Card key={i} className="p-6 border border-border bg-card">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                <p className="text-base md:text-lg leading-relaxed md:max-w-3xl">{t.quote}</p>
-                <div className="text-right md:text-right md:min-w-[220px]">
-                  <p className="font-medium">{t.author}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {t.title} • {t.company}
-                  </p>
-                </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <Card
+              key={index}
+              ref={(el) => observeCard(el, index)}
+              data-index={index}
+              className={`p-6 bg-card border border-border hover:border-border/80 flex flex-col justify-between ${
+                hasAnimated.has(index) 
+                  ? 'transition-all duration-700' 
+                  : ''
+              } ${
+                visibleCards.has(index)
+                  ? 'opacity-100 translate-y-0'
+                  : hasAnimated.has(index) 
+                    ? 'opacity-0 translate-y-10' 
+                    : 'opacity-100 translate-y-0'
+              }`}
+              style={hasAnimated.has(index) ? { transitionDelay: `${(index % 3) * 100}ms` } : undefined}
+            >
+              <p className="text-base leading-relaxed mb-6 flex-grow">
+                {testimonial.quote}
+              </p>
+              
+              <div>
+                <p className="font-semibold text-sm">{testimonial.author}</p>
+                <p className="text-xs text-muted-foreground">
+                  {testimonial.title}, {testimonial.company}
+                </p>
               </div>
             </Card>
           ))}
@@ -75,5 +136,3 @@ const Testimonials = () => {
 };
 
 export default Testimonials;
-
-

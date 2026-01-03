@@ -1,63 +1,121 @@
-import { Terminal, GitBranch, Network, Shield } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const features = [
   {
-    icon: Terminal,
-    title: "Agentic failure analysis",
+    title: "Connect your GitHub repo and your alerting system",
     description:
-      "Arga continuously monitors latency spikes, errors, and anomalies across your stack—correlating them with recent PRs, code diffs, and dependency shifts to surface true root causes in minutes.",
+      "Seamlessly integrate with your existing workflow. Connect your GitHub repositories and alerting systems like Grafana or AWS Cloudwatch to get started in minutes.",
+    videoId: "3nHpN0BGsjs",
+    position: "left" as const,
   },
   {
-    icon: GitBranch,
+    title: "Root cause analysis with dynamic context graph",
+    description:
+      "Arga finds the root cause and localizes issues in seconds with a constantly updating knowledge graph that maps files, diffs, and context.",
+    videoId: "TKIgAWvRAl4",
+    position: "right" as const,
+  },
+  {
     title: "Intelligent rollback suggestions",
     description:
-      "When production breaks, Arga identifies the minimal set of PRs responsible and auto-generates rollback or patch suggestions that can be safely tested before merge.",
+      "Arga suggests multiple rollback options with a confidence score. You can either set it to automatically select the best option, or select manually.",
+    videoId: "tLoMx16nKCU",
+    position: "left" as const,
   },
   {
-    icon: Network,
-    title: "Dynamic context graph",
+    title: "Production-mirrored testing",
     description:
-      "A constantly updating knowledge graph that maps files, diffs, runtime logs, and service dependencies—ensuring agents always reason with fresh, relevant information.",
-  },
-  {
-    icon: Shield,
-    title: "Fully autonomous incident response",
-    description:
-      "For each rollback, Arga spins an isolated sandbox mirroring production. It runs synthetic tests, traces, and integration checks so you can validate behavior before merge—no surprises post-deploy.",
+      "Arga spins an isolated sandbox mirroring production. It runs the minimal set of tests to validate behavior before merge.",
+    videoId: "FpMg1Wn-kdo",
+    position: "right" as const,
   },
 ];
 
 const Features = () => {
+  const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const [hasAnimated, setHasAnimated] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = parseInt(entry.target.getAttribute('data-index') || '0');
+          if (entry.isIntersecting) {
+            setVisibleItems((prev) => new Set(prev).add(index));
+            setHasAnimated((prev) => new Set(prev).add(index));
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const observeElement = (element: HTMLDivElement | null, index: number) => {
+    if (element && observerRef.current) {
+      observerRef.current.observe(element);
+    }
+  };
+
   return (
-    <section id="features" className="scroll-mt-20 px-6 py-24 border-t border-border">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-3xl md:text-5xl font-bold">
-            Built for autonomous systems
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From immediate incident response to long-term agent orchestration
-          </p>
-        </div>
-        
-        <div className="grid md:grid-cols-2 gap-8">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <div 
-                key={index} 
-                className="group p-8 rounded-lg border border-border bg-card hover:bg-accent transition-all duration-300"
-              >
-                <div className="mb-4 inline-flex p-3 rounded-lg bg-muted border border-border group-hover:bg-accent transition-all duration-300">
-                  <Icon className="h-6 w-6 text-foreground transition-colors duration-300" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-foreground transition-colors duration-300">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">
+    <section id="features" className="scroll-mt-20 px-8 py-24 border-t border-border">
+      <div className="max-w-[1600px] mx-auto">
+        <div className="space-y-32">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              ref={(el) => observeElement(el, index)}
+              data-index={index}
+              className={`flex flex-col ${
+                feature.position === "left" 
+                  ? "lg:flex-row" 
+                  : "lg:flex-row-reverse"
+              } items-center gap-12 lg:gap-20 ${
+                hasAnimated.has(index) 
+                  ? 'transition-all duration-1000' 
+                  : ''
+              } ${
+                visibleItems.has(index)
+                  ? 'opacity-100 translate-y-0'
+                  : hasAnimated.has(index) 
+                    ? 'opacity-0 translate-y-10' 
+                    : 'opacity-100 translate-y-0'
+              }`}
+            >
+              {/* Text Content */}
+              <div className={`lg:w-2/5 space-y-4 ${
+                feature.position === "left" ? "lg:pr-8" : "lg:pl-8"
+              }`}>
+                <h3 className="text-2xl md:text-3xl font-semibold text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
               </div>
-            );
-          })}
+
+              {/* Video Content */}
+              <div className="lg:w-3/5 w-full">
+                <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden max-w-[1920px]">
+                  <iframe
+                    width="1920"
+                    height="1080"
+                    className="w-full h-full block"
+                    src={`https://www.youtube.com/embed/${feature.videoId}?autoplay=1&mute=1&loop=1&playlist=${feature.videoId}&controls=0&modestbranding=1&playsinline=1&rel=0&hd=1`}
+                    title={feature.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    style={{ pointerEvents: 'none' }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

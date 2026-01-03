@@ -24,7 +24,7 @@ const Footer = () => {
           </div>
 
           <p className="text-sm text-muted-foreground">
-            © 2025 Arga Labs. All rights reserved.
+            © 2026 Arga Labs. All rights reserved.
           </p>
         </div>
       </div>
