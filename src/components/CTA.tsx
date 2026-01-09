@@ -97,11 +97,13 @@ const CTA = () => {
             : 'opacity-100 translate-y-0'
       }`}>
         <h2 className="text-3xl md:text-5xl font-bold">
-          Join our alpha program
+          Try Arga now
         </h2>
         
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Our alpha prototype drops in Jan 2026. Join our waitlist to get early access.
+          Our prototype is live with Grafana integration support
+          <br/>
+          Join our alpha program to try it out
         </p>
         
         <form
