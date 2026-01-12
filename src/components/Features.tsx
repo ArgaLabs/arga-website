@@ -6,7 +6,7 @@ const features = [
     description:
       "Seamlessly integrate with your existing workflow. Connect your GitHub repositories and alerting systems like Grafana or AWS Cloudwatch to get started in minutes.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Integration2.mp4",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Intergration3-1080.mov",
     position: "left" as const,
   },
   {
@@ -14,7 +14,7 @@ const features = [
     description:
       "Arga finds the root cause and localizes issues in seconds with a constantly updating knowledge graph that maps files, diffs, and context.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Rootcause.mp4",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Rootcause-1080.mov",
     position: "right" as const,
   },
   {
@@ -22,7 +22,7 @@ const features = [
     description:
       "Arga suggests multiple rollback options with a confidence score. You can either set it to automatically select the best option, or select manually.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/SuggestFix.mp4",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/SuggestFix-1080.mov",
     position: "left" as const,
   },
   {
@@ -30,7 +30,7 @@ const features = [
     description:
       "Arga spins an isolated sandbox mirroring production. It runs the minimal set of tests to validate behavior before merge.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/ConfidenceScore.mp4",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/ConfidenceScore-1080.mov",
     position: "right" as const,
   },
 ];
@@ -109,7 +109,7 @@ const Features = () => {
             >
               {/* Text Content */}
               <div
-                className={`lg:w-2/5 space-y-4 lg:-mt-16 ${
+                className={`lg:w-1/4 space-y-4 lg:-mt-16 ${
                   feature.position === "left" ? "lg:pr-8" : "lg:pl-8"
                 }`}
               >
@@ -122,7 +122,7 @@ const Features = () => {
               </div>
 
               {/* Video Content */}
-              <div className="lg:w-3/5 w-full">
+              <div className="lg:w-3/4 w-full">
                 <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden max-w-[1920px]">
                   <video
                     ref={(el) => {

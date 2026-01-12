@@ -21,7 +21,7 @@ const Hero = () => {
           <img 
             src={theme === "dark" ? "/blackLogo-removebg-preview.png" : "/domain.png"}
             alt="Domain Logo" 
-            className="h-[120px] w-auto"
+            className="h-[90px] w-auto"
           />
         </div>
 
