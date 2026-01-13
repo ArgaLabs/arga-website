@@ -6,7 +6,9 @@ const features = [
     description:
       "Seamlessly integrate with your existing workflow. Connect your GitHub repositories and alerting systems like Grafana or AWS Cloudwatch to get started in minutes.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Intergration3-1080.mov",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Intergration3-1080.mp4",
+    posterSrc:
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Intergration3-poster.jpg",
     position: "left" as const,
   },
   {
@@ -14,7 +16,9 @@ const features = [
     description:
       "Arga finds the root cause and localizes issues in seconds with a constantly updating knowledge graph that maps files, diffs, and context.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Rootcause-1080.mov",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Rootcause-1080.mp4",
+    posterSrc:
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/Rootcause-poster.jpg",
     position: "right" as const,
   },
   {
@@ -22,7 +26,9 @@ const features = [
     description:
       "Arga suggests multiple rollback options with a confidence score. You can either set it to automatically select the best option, or select manually.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/SuggestFix-1080.mov",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/SuggestFix-1080.mp4",
+    posterSrc:
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/SuggestFix-poster.jpg",
     position: "left" as const,
   },
   {
@@ -30,7 +36,9 @@ const features = [
     description:
       "Arga spins an isolated sandbox mirroring production. It runs the minimal set of tests to validate behavior before merge.",
     videoSrc:
-      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/ConfidenceScore-1080.mov",
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/ConfidenceScore-1080.mp4",
+    posterSrc:
+      "https://nxjedundtzyivalxlqsi.supabase.co/storage/v1/object/public/demos/ConfidenceScore-poster.jpg",
     position: "right" as const,
   },
 ];
@@ -73,6 +81,23 @@ const Features = () => {
       },
       { threshold: 0.1, rootMargin: "50px" }
     );
+
+    // Manually start the first video immediately (browser priority fix)
+    const startFirstVideo = async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const firstVideo = videoRefs.current[0];
+      if (firstVideo) {
+        try {
+          firstVideo.muted = true;
+          firstVideo.playsInline = true;
+          await firstVideo.play();
+        } catch {
+          // autoplay blocked
+        }
+      }
+    };
+    
+    startFirstVideo();
 
     return () => {
       if (observerRef.current) observerRef.current.disconnect();
@@ -133,7 +158,9 @@ const Features = () => {
                     muted
                     loop
                     playsInline
-                    preload="auto"
+                    poster={feature.posterSrc}
+                    preload={index === 0 ? "auto" : "metadata"}
+                    {...(index === 0 ? { fetchpriority: "high" } : {})}
                     // iOS Safari hint (React will pass it through)
                     {...({ "webkit-playsinline": "true" } as any)}
                     // matches your old iframe behavior
