@@ -122,7 +122,7 @@ const Features = () => {
               data-index={index}
               className={`flex flex-col ${
                 feature.position === "left" ? "lg:flex-row" : "lg:flex-row-reverse"
-              } items-center gap-24 lg:gap-40 ${
+              } items-center gap-12 lg:gap-20 ${
                 hasAnimated.has(index) ? "transition-all duration-1000" : ""
               } ${
                 visibleItems.has(index)
@@ -138,7 +138,7 @@ const Features = () => {
                   feature.position === "left" ? "lg:pr-8" : "lg:pl-8"
                 }`}
               >
-                <h3 className="text-4xl md:text-5xl font-semibold text-foreground">
+                <h3 className="text-3xl md:text-4xl font-semibold text-foreground">
                   {feature.title}
                 </h3>
                 <p className="text-lg text-muted-foreground leading-relaxed">
